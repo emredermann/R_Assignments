@@ -1,0 +1,32 @@
+```{r message=TRUE, warning=TRUE, paged.print=FALSE}
+library(nycflights13)
+library(tidyverse)
+
+#Section 5.2.4, Exercises 1, 2, 3
+filter(flights, arr_delay >= 120)
+filter(flights, dest == "IAH" | dest == "HOU")
+filter(flights, dest %in% c("IAH", "HOU"))
+filter(flights, carrier %in% c("AA", "DL", "UA"))
+filter(flights, month >= 7, month <= 9)
+filter(flights, month %in% 7:9)
+filter(flights, arr_delay > 120, dep_delay <= 0)
+filter(flights, dep_delay >= 60, dep_delay - arr_delay > 30)
+filter(flights, dep_time <= 600 | dep_time == 2400)
+
+# Exercise 2
+filter(flights, between(month, 7, 9))
+
+# Exercise 3 
+filter(flights, is.na(dep_time))
+summary(flights)
+
+
+
+
+#Section 5.3.1, Exercises 2, 3, 4
+#Section 5.6.7, Exercise 5
+#Section 5.7.1, Exercises 2, 3
+```
+
+Check Here !
+#https://jrnold.github.io/r4ds-exercise-solutions/transform.html
