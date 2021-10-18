@@ -1,0 +1,7 @@
+Read from ISLR 2e 
+•	Chapter 2,
+•	Sections 5.1.1 - 5.1.4 on cross-validation of Chapter 5.
+Do from ISLR 2e 
+•	Chapter 2 Exercises 1 and 3 on pages 52 and 53,
+•	Chapter 5 Exercise 8 a-e on pages 222-223.
+ISLR 2e is our textbook: Introduction to Statistical Learning with Applications in R, 2nd edition.
