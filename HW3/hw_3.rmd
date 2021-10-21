@@ -5,3 +5,102 @@ Do from ISLR 2e
 •	Chapter 2 Exercises 1 and 3 on pages 52 and 53,
 •	Chapter 5 Exercise 8 a-e on pages 222-223.
 ISLR 2e is our textbook: Introduction to Statistical Learning with Applications in R, 2nd edition.
+
+
+```{r}
+
+```
+
+For each of parts (a) through (d), indicate whether we would generally
+expect the performance of a flexible statistical learning method to be
+better or worse than an inflexible method. Justify your answer.
+(a) The sample size n is extremely large, and the number of predictors
+p is small.
+```{r}
+
+```
+
+(b) The number of predictors p is extremely large, and the number
+of observations n is small.
+```{r}
+
+```
+
+(c) The relationship between the predictors and response is highly
+non-linear.
+```{r}
+
+```
+
+(d) The variance of the error terms, i.e. σ2 = Var(ϵ), is extremely
+high.
+```{r}
+
+```
+
+
+
+
+
+We now revisit the bias-variance decomposition.
+(a) Provide a sketch of typical (squared) bias, variance, training error,
+test error, and Bayes (or irreducible) error curves, on a single
+plot, as we go from less flexible statistical learning methods
+towards more flexible approaches. The x-axis should represent
+the amount of flexibility in the method, and the y-axis should
+represent the values for each curve. There should be five curves.
+Make sure to label each one.
+```{r}
+
+```
+
+(b) Explain why each of the five curves has the shape displayed in
+part (a).
+```{r}
+
+```
+
+
+
+We will now perform cross-validation on a simulated data set.
+(a) Generate a simulated data set as follows:
+  set.seed (1)
+  x <- rnorm (100)
+  y <- x - 2 * x^2 + rnorm (100)
+In this data set, what is n and what is p? Write out the model
+used to generate the data in equation form.
+```{r}
+
+```
+
+
+(b) Create a scatter plot of X against Y . Comment on what you find.
+```{r}
+
+```
+
+(c) Set a random seed, and then compute the LOOCV errors that
+result from fitting the following four models using least squares:
+i. Y = β0 + β1X + ϵ
+ii. Y = β0 + β1X + β2X2 + ϵ
+iii. Y = β0 + β1X + β2X2 + β3X3 + ϵ
+iv. Y = β0 + β1X + β2X2 + β3X3 + β4X4 + ϵ.
+Note you may find it helpful to use the data.frame() function
+to create a single data set containing both X and Y .
+```{r}
+
+```
+
+
+(d) Repeat (c) using another random seed, and report your results.
+Are your results the same as what you got in (c)? Why?
+```{r}
+
+```
+
+(e) Which of the models in (c) had the smallest LOOCV error? Is
+this what you expected? Explain your answer.
+```{r}
+
+```
+
