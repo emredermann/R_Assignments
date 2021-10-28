@@ -1,0 +1,172 @@
+Read Chapter 3 Sections 3.1 and 3.2 from ISLR 2e.
+•	Do Exercises 1, 3, 4, 8 in Section 3.7 between pages 121 and 123 of ISLR 2e. 
+
+
+Describe the null hypotheses to which the p-values given in Table 3.4
+correspond. Explain what conclusions you can draw based on these
+p-values. Your explanation should be phrased in terms of sales, TV,
+radio, and newspaper, rather than in terms of the coefficients of the
+linear model.
+
+Answer:
+
+```{r}
+ # Generally speaking, the p-values given in the table report 
+ # the partial effect of adding that variable to the model. 
+# The p-value for TV corresponds to a null hypothesis that the coefficient for TV is zero, 
+#Since the p-value for TV is essentially zero, there is strong evidence that TV advertising is related to sales.
+#Things are similar for radio
+#Lastly, the p-value for newspaper corresponds to a null hypothesis that the coefficient for newspaper is zero
+
+
+```
+
+ 
+ Level === Gender
+ 1 female
+ 
+Suppose we have a data set with five predictors, X1 = GPA, X2 =
+IQ, X3 = Level (1 for College and 0 for High School), X4 = Interaction
+between GPA and IQ, and X5 = Interaction between GPA and
+Level. The response is starting salary after graduation (in thousands
+of dollars). Suppose we use least squares to fit the model, and get
+ˆ β0 = 50, ˆ β1 = 20, ˆ β2 = 0.07, ˆ β3 = 35, ˆ β4 = 0.01, ˆ β5 = −10.
+
+(a) Which answer is correct, and why?
+i. For a fixed value of IQ and GPA, high school graduates earn
+more, on average, than college graduates.
+ii. For a fixed value of IQ and GPA, college graduates earn
+more, on average, than high school graduates.
+iii. For a fixed value of IQ and GPA, high school graduates earn
+more, on average, than college graduates provided that the
+GPA is high enough.
+iv. For a fixed value of IQ and GPA, college graduates earn
+more, on average, than high school graduates provided that
+the GPA is high enough.
+
+```{r}
+The third answer (C) is correct. To see why this is the case, suppose we have fixed values for GPA and IQ:  X1=a  and  X2=b . 
+Plugging into the least squares regression model and rearranging, we have
+y^=50+20a+0.07b+0.01ab+(35−10a)X3.
+ 
+For lower GPA values ( a<3.5 ), the coefficient of  X3  is positive, meaning that for a fixed value of IQ and a fixed GPA value less than 3.5, College earn more on average than High School, as  X3=1  for college and is zero for High School For GPA values above 3.5, the coefficient of  X3  becomes negative, meaning that for a fixed value of IQ and a fixed GPA value greater than 3.5, High School earn more on average. Hence, the model says that for a fixed value of IQ and GPA, High school earn more on average than college, provided that the GPA is high enough.
+```
+
+(b) Predict the salary of a college graduate with IQ of 110 and a
+GPA of 4.0.
+```{r}
+Plugging into the least squares regression model, we have
+y^=50+20(4.0)+0.07(110)+35(1)+0.01(4.0)(110)−10(4.0)(1)=137.1.
+ 
+This gives us a predicted salary of $137,100 for a college with an IQ of 110 and a GPA of 4.0.
+```
+
+(c) True or false: Since the coefficient for the GPA/IQ interaction
+term is very small, there is very little evidence of an interaction
+effect. Justify your answer.
+
+```{r}
+False. The value of the coefficient 
+for an interaction term doesn't provide evidence for or against the possibility of an interaction effect. 
+In order to actually make a statement about evidence of an interaction effect, or lack thereof, we would need to either be given or compute a p-value for the coefficient of the interaction term.
+
+```
+
+
+
+I collect a set of data (n = 100 observations) containing a single
+predictor and a quantitative response. I then fit a linear regression
+model to the data, as well as a separate cubic regression, i.e. Y =
+β0 + β1X + β2X2 + β3X3 + ϵ.
+
+(a) Suppose that the true relationship between X and Y is linear,
+i.e. Y = β0 + β1X + ϵ. Consider the training residual sum of
+squares (RSS) for the linear regression, and also the training
+RSS for the cubic regression. Would we expect one to be lower
+than the other, would we expect them to be the same, or is there
+not enough information to tell? Justify your answer.
+```{r}
+I would expect the training RSS for the cubic regression to be lower than that of the linear regression, since cubic regression has a higher level of flexibility. As the flexibility of a model increases, the training mean squared error, which is equal to the product of the training RSS and the number of observations  n , decreases monotonically. This is regardless of the nature of the true relationship between  X  and  Y .
+```
+
+(b) Answer (a) using test rather than training RSS.
+```{r}
+I would expect the test RSS for the linear regression to be lower than that of the cubic regression. Test RSS depends on the variance and squared bias of the model, as well as by the variance of  ϵ . Since the true relationship in this situation is linear, linear regression has lower bias than cubic regression. Moreover, linear regression, as a less-flexible model, always has less variance than cubic regression, since variance is a measure of how much the model would change if we estimated it using a different training set. Thus, since the variance of  ϵ  is a constant and the linear model has lower bias and variance compared to the cubic model, linear regression will result in a lower test RSS compared to cubic regression.
+```
+
+(c) Suppose that the true relationship between X and Y is not linear,
+but we don’t know how far it is from linear. Consider the training
+RSS for the linear regression, and also the training RSS for the
+cubic regression. Would we expect one to be lower than the
+other, would we expect them to be the same, or is there not
+enough information to tell? Justify your answer.
+```{r}
+Similar to part (1), I would expect the training RSS for the cubic regression to be lower than that of the linear regression. Again this is due to the fact that cubic regression has a higher level of flexibility, and increased flexibility results in lower training mean squared error, and hence lower training RSS.
+```
+
+(d) Answer (c) using test rather than training RSS.
+```{r}
+In this situation, cubic regression will likely have less bias than linear regression, since the true relationship is not linear. However, since we don't know how far it is from linear, we don't know the size of the difference in bias between the two models. Moreover, as noted in part (2), cubic regression has higher variance than linear regression, so the accuracy of a cubic regression model depends more on the training data. Since we don't know anything about the training data, we don't know how well it actually represents the relationshp between the predictor and the response. Because we don't know the size of the difference in bias between the two models, and also since cubic regression has higher variance and we don't know anything further about the training data, we don't have enough information to compare the values of the test RSS between the two models in this situation.
+
+```
+
+
+
+This question involves the use of simple linear regression on the Auto
+data set.
+(a) Use the lm() function to perform a simple linear regression with
+mpg as the response and horsepower as the predictor. Use the
+summary() function to print the results. Comment on the output.
+```{r}
+library(ISLR)
+library(MASS)
+data("Auto")
+head(Auto)
+
+lm.fit<- lm(mpg~horsepower,data=Auto)
+summary(lm.fit)
+```
+
+For example:
+i. Is there a relationship between the predictor and the response?
+```{r}
+Yes, since p value is 2.2e-16
+```
+
+ii. How strong is the relationship between the predictor and
+the response
+```{r}
+ The R^{2} value indicates that about 61% of the variation in the response variable ( mpg) is due to the predictor variable (horsepower).
+```
+
+iii. Is the relationship between the predictor and the response
+positive or negative?
+```{r}
+ Negative
+```
+
+iv. What is the predicted mpg associated with a horsepower of
+98? What are the associated 95% confidence and prediction
+intervals?
+```{r}
+predict(lm.fit,data.frame(horsepower=c(98)),interval="prediction")
+predict(lm.fit,data.frame(horsepower=c(98)),interval="confidence")
+```
+
+
+(b) Plot the response and the predictor. Use the abline() function
+to display the least squares regression line.
+```{r}
+attach(Auto)
+plot(horsepower,mpg)
+abline(lm.fit,lwd=5,col="blue")
+```
+
+(c) Use the plot() function to produce diagnostic plots of the least
+squares regression fit. Comment on any problems you see with
+the fit.
+
+```{r}
+which.max(hatvalues(lm.fit))
+```
+
