@@ -1,0 +1,190 @@
+---
+title: "HW_5"
+output: html_document
+author : Emre Derman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Solve Problems 3.3 Chapter 3 
+Six students in a statistics course had the following scores for their midterm and final exams:
+Midterm1 100 85 95 80 90 70 Midterm2 90 95 75 90 70 80 Final 90 94 78 74 67 62
+3.3
+􏰆
+PROBLEMS 153
+  year <- c(2000 ,   2001  ,  2002  ,  2003 ,   2004)
+```{r}
+Midterm1<- c(100, 85, 95, 80, 90, 70) 
+Midterm2<- c(90, 95 ,75, 90, 70, 80) 
+Final <- c( 90 ,94 ,78 ,74, 67 ,6)
+
+plot(Midterm1,Midterm2,
+     main="Midterm 1 - Midterm 2")
+cor(Midterm1,Midterm2,)
+
+# Regression equation
+Final_regression <- (0.723 * Midterm1) + (0.960 * Midterm2) - (65.218)
+
+
+
+fit <- lm(Midterm1 ~ Midterm2)
+fit
+attributes(fit)
+
+# Residuals Calculation
+res <- Midterm2 - (fit$coefficients[[2]]*Midterm1+fit$coefficients[[1]])
+plot(Midterm1,Midterm2)
+
+
+plot(Midterm1,Midterm2,
+     main="Midterm 1 - Midterm 2")
+abline(fit)
+
+
+
+summary(fit)
+
+```
+
+  
+154 MULTIPLE LINEAR REGRESSION
+A multiple linear regression model with response variable Final and predictor variables
+Midterm1 and Midterm2 resulted in the least squares estimated regression equation: 􏰊
+Final = −65.218 + 0.723Midterm1 + 0.960Midterm2 .
+Answer the following questions using hand calculations. You can check your answers using statistical software.
+
+6 students have been there as total.
+
+(a) Use the least squares estimated regression equation to calculate the predicted 
+(fitted) values, Final, for each student. 
+
+
+Student_1_predicted_value =  −65.218 + 0.723 (100) + 0.960 * (90) .  #98.482
+Student_2_predicted_value =  −65.218 + 0.723 (85) + 0.960 * (95) .  # 87.437
+Student_3_predicted_value =  −65.218 + 0.723 (95) + 0.960 * (75) .  # 75.467
+Student_4_predicted_value =  −65.218 + 0.723 (80) + 0.960 * (90) .  # 79.022
+Student_5_predicted_value =  −65.218 + 0.723 (90) + 0.960 * (70) .  # 67.052
+Student_6_predicted_value =  −65.218 + 0.723 (70) + 0.960 * (80) .  # 62.192
+
+
+
+(b) Calculate the residuals, for each student. 
+Final - Residual_Final
+```{r}
+Student_1_Residual <- 90 - 98.482
+Student_2_Residual <- 94-87.437
+Student_3_Residual <- 74 - 75.467
+Student_4_Residual <- 67 - 67.052
+Student_5_Residual <- 78 - 79.022
+Student_6_Residual <- 6 - 62.192
+
+```
+
+(c) Calculate the residual sum of squares
+
+```{r}
+rss <- Student_1_Residual ^ 2 + Student_2_Residual ^ 2 + Student_3_Residual ^ 2 + Student_4_Residual ^ 2 + Student_5_Residual ^ 2+ Student_6_Residual ^ 2
+rss
+```
+
+(d) Calculate the residual standard error
+
+```{r}
+residual_standart_error <-sqrt(rss / 2)
+residual_standart_error
+```
+
+(e) Calculate the sample mean of Final, mFinal, and use this to calculate the difference, Final − mFinal , for each student.
+
+Midterm1<- c(100, 85, 95, 80, 90, 70) 
+Midterm2<- c(90, 95 ,75, 90, 70, 80) 
+Final <- c( 90 ,94 ,78 ,74, 67 ,6)
+```{r}
+sample_mean <- 90 + 94 + 78 + 74 + 67 + 6
+Student_1_sample_mean <- 90 - sample_mean
+Student_2_sample_mean <- 94 - sample_mean
+Student_3_sample_mean <- 74 - sample_mean
+Student_4_sample_mean <- 67 - sample_mean
+Student_5_sample_mean <- 6 - sample_mean
+Student_6_sample_mean <- 78 - sample_mean
+```
+
+(f) Calculate the total sum of squares, TSS = 􏰁ni=1 (Final i − mFinal )2 .
+
+```{r}
+tss <- Student_1_sample_mean ^ 2 + Student_2_sample_mean ^ 2 + Student_3_sample_mean ^ 2 + Student_4_sample_mean ^ 2 + Student_5_sample_mean ^ 2 + Student_6_sample_mean ^ 2
+tss
+```
+
+(g) Calculate the coefficient of determination, R2 = 1 − RSS .
+TS
+
+```{r}
+coefficient_of_determination <-  sqrt(1 - rss/tss)
+coefficient_of_determination
+```
+
+
+
+Problem 3.5 Chapter 3
+
+
+
+Consider the MOVIES data file from Problem 3.1 again.
+(a) Use statistical software to fit the following (complete) model for Box as a
+function of all six predictor variables [computer help #31]:
+E(Box) = b0 + b1Rate + b2User + b3Meta + b4Len + b5Win + b6Nom. 
+Write down the residual sum of squares for this model.
+
+```{r}
+movie_data<-read.csv(file = 'movies.csv')
+head(movie_data)
+```
+
+(b) Usestatisticalsoftwaretofitthefollowing(reduced)model[computerhelp#31]: E(Box) = b0 + b1Rate + b2User + b3Meta.
+[This is the model from Problem 3.1 part (b).] Write down the residual sum of squares for this model.
+
+```{r}
+
+```
+
+(c) Using the results from parts (a) and (b) together with the nested model test F-statisticformulainSection3.3.4,testthenullhypothesisNH:b4 =b5 =b6 =0
+(m) The least squares estimated regression equation is Disease = . . . + . . . Risk1 + ...Risk2 + ...Risk3.
+
+
+```{r}
+
+```
+
+PROBLEMS 155
+156
+MULTIPLE LINEAR REGRESSION
+3.6
+in the complete model, using significance level 5%. Write out all the hypothesis test steps and interpret the result in the context of the problem.
+Hint: To solve this part you may find the following information useful. The 95th percentile of the F-distribution with 3 numerator degrees of freedom and 18 denominator degrees of freedom is 3.160.
+
+```{r}
+
+```
+
+(d) Check your answer for part (c) by using statistical software to do the nested model test directly [computer help #34]. State the values of the F-statistic and the p-value, and draw an appropriate conclusion.
+
+```{r}
+
+```
+
+(e) Anotherwaytoseewhetherweshouldpreferthereducedmodelforthisexample is to see whether the regression standard error (s) is smaller for the reduced model than for the complete model and whether adjusted R2 is higher for the reduced model than for the complete model. Confirm whether these relationships hold in this example (i.e., compare the values of s and adjusted R2 in the reduced and complete models).
+
+
+
+```{r}
+
+
+
+
+
+
+
+```
