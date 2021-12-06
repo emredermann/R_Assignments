@@ -1,106 +1,156 @@
-Read from ISLR 2e 
-•	Chapter 2,
-•	Sections 5.1.1 - 5.1.4 on cross-validation of Chapter 5.
-Do from ISLR 2e 
-•	Chapter 2 Exercises 1 and 3 on pages 52 and 53,
-•	Chapter 5 Exercise 8 a-e on pages 222-223.
-ISLR 2e is our textbook: Introduction to Statistical Learning with Applications in R, 2nd edition.
+Emre Derman
+21703508    
+HW_3
+Solutions
 
-
-```{r}
-
-```
-
-For each of parts (a) through (d), indicate whether we would generally
-expect the performance of a flexible statistical learning method to be
-better or worse than an inflexible method. Justify your answer.
 (a) The sample size n is extremely large, and the number of predictors
 p is small.
 ```{r}
-
+# Better. A flexible method will the data closer and makes it sample size, would perform better than an inflexible approach.
 ```
 
 (b) The number of predictors p is extremely large, and the number
 of observations n is small.
 ```{r}
-
+# Worse. A flexible method would overfit the small number of observations.
 ```
 
 (c) The relationship between the predictors and response is highly
 non-linear.
 ```{r}
-
+# Better. With more degrees of freedom, a flexible method would fit better than an inflexible one.
 ```
 
 (d) The variance of the error terms, i.e. σ2 = Var(ϵ), is extremely
 high.
 ```{r}
-
+#Worse. A flexible method would fit to the noise in the error terms and increase variance.
 ```
 
 
-
-
-
 We now revisit the bias-variance decomposition.
-(a) Provide a sketch of typical (squared) bias, variance, training error,
-test error, and Bayes (or irreducible) error curves, on a single
+(a) Provide a sketch of typical (squared) bias, variance, 
+training error,
+test error, and 
+Bayes (or irreducible) error curves, 
+on a single
 plot, as we go from less flexible statistical learning methods
 towards more flexible approaches. The x-axis should represent
 the amount of flexibility in the method, and the y-axis should
 represent the values for each curve. There should be five curves.
 Make sure to label each one.
-```{r}
 
+```{r}
+library(magrittr) 
+library(dplyr)    
+library(tidyr)
+library(ggplot2)
+bias_variance <- tibble(
+  flexibility = c(1:5),
+  bias = 100 + c(300,200,150,100,50),
+  variance = 100 + c(0,25,125,250,500),
+  training_error = 100 + c(350,250,200, 125, 50),
+  irreducible_error = 400,
+  test_error = variance + bias + irreducible_error)   %>%
+  gather(`bias`, `variance`, `training_error`, `irreducible_error`, `test_error`,
+         key = "measurement", value = "value")
+
+ggplot(bias_variance, aes(x = flexibility, y = value, colour = measurement)) +
+  geom_smooth(se = FALSE, method = "lm", formula = y ~ poly(x,3)) 
 ```
 
 (b) Explain why each of the five curves has the shape displayed in
 part (a).
 ```{r}
+#Bias decreases with increased flexibility because  the structured data assumed less.
+#Variance increases with flexibility because the data overfitted .
+#Irreducible error curves have no relation with flexibility because no matter what the model is, error is inevitable.
+#Training error is inversely proportional to flexibility because a more flexible model better fits the training data
+#Test error stays above irreducible error, first decreasing and then increasing.
 
 ```
 
-
-
 We will now perform cross-validation on a simulated data set.
 (a) Generate a simulated data set as follows:
-  set.seed (1)
-  x <- rnorm (100)
-  y <- x - 2 * x^2 + rnorm (100)
+```{r}
+  set.seed(1)
+  x <- rnorm(100)
+  y <- x - 2 * x^2 + rnorm(100)
+```
+
 In this data set, what is n and what is p? Write out the model
 used to generate the data in equation form.
 ```{r}
-
+# n=100 and p=2, the model used is
+# Y=X−2X^2+ε.
 ```
 
 
 (b) Create a scatter plot of X against Y . Comment on what you find.
 ```{r}
-
+plot(x,y)
 ```
 
 (c) Set a random seed, and then compute the LOOCV errors that
 result from fitting the following four models using least squares:
 i. Y = β0 + β1X + ϵ
-ii. Y = β0 + β1X + β2X2 + ϵ
-iii. Y = β0 + β1X + β2X2 + β3X3 + ϵ
-iv. Y = β0 + β1X + β2X2 + β3X3 + β4X4 + ϵ.
-Note you may find it helpful to use the data.frame() function
-to create a single data set containing both X and Y .
 ```{r}
+library(boot)
+set.seed(1)
+tmp <- data.frame(x, y)
+fit.glm.1 <- glm(y ~ x)
+cv.glm(tmp, fit.glm.1)$delta[1]
+```
+ii. Y = β0 + β1X + β2X2 + ϵ
+```{r}
+fit.glm.2 <- glm(y ~ poly(x, 2))
+cv.glm(tmp, fit.glm.2)$delta[1]
+```
+iii. Y = β0 + β1X + β2X2 + β3X3 + ϵ
+```{r}
+fit.glm.3 <- glm(y ~ poly(x, 3))
+cv.glm(tmp, fit.glm.3)$delta[1]
 
 ```
+iv. Y = β0 + β1X + β2X2 + β3X3 + β4X4 + ϵ.
+```{r}
+fit.glm.4 <- glm(y ~ poly(x, 4))
+cv.glm(tmp, fit.glm.4)$delta[1]
+```
+Note you may find it helpful to use the data.frame() function
+to create a single data set containing both X and Y .
 
 
 (d) Repeat (c) using another random seed, and report your results.
 Are your results the same as what you got in (c)? Why?
+i. Y = β0 + β1X + ϵ
 ```{r}
+set.seed(10)
+fit.glm.1 <- glm(y ~ x)
+cv.glm(tmp, fit.glm.1)$delta[1]
+```
+ii. Y = β0 + β1X + β2X2 + ϵ
+```{r}
+fit.glm.2 <- glm(y ~ poly(x, 2))
+cv.glm(tmp, fit.glm.2)$delta[1]
+```
+iii. Y = β0 + β1X + β2X2 + β3X3 + ϵ
+```{r}
+fit.glm.3 <- glm(y ~ poly(x, 3))
+cv.glm(tmp, fit.glm.3)$delta[1]
 
 ```
+iv. Y = β0 + β1X + β2X2 + β3X3 + β4X4 + ϵ.
+```{r}
+fit.glm.4 <- glm(y ~ poly(x, 4))
+cv.glm(tmp, fit.glm.4)$delta[1]
+```
+The results above are identical to the results obtained in (c) since LOOCV evaluates n folds of a single observation.
+
 
 (e) Which of the models in (c) had the smallest LOOCV error? Is
 this what you expected? Explain your answer.
 ```{r}
-
+#We may see that the LOOCV estimate for the test MSE is minimum for “fit.glm.2”, this is not surprising since we saw clearly in (b) that the relation between “x” and “y” is quadratic.
 ```
 
