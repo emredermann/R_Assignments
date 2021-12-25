@@ -1,0 +1,199 @@
+---
+title: "HW_7"
+author: "Emre Derman"
+date: "12/24/2021"
+output: html_document
+---
+Question 13
+## PART A
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ISLR2); 
+library(tidyverse);
+library(ggplot2);
+library(GGally); 
+library(knitr);
+library(corrplot);
+library(broom);
+library(kableExtra)
+```
+
+```{r}
+set.seed(1)
+data('Weekly')
+glimpse(Weekly)
+
+```
+
+
+
+```{r}
+kable(Weekly %>%
+          gather(Variable, value, starts_with('Lag'), Today) %>%
+          group_by(Variable, Direction) %>%
+          summarise(Q25 = quantile(value, 0.25), 
+                    median = median(value),  
+                    mean = mean(value),
+                    Q75 = quantile(value, 0.75)),
+      digits = 3, format = 'html') %>%
+    kable_styling('striped') %>%
+    row_spec(2*1:6, background = 'white') %>%
+    column_spec(1:2)
+```
+
+```{r}
+cor_test <- cor.mtest(Weekly[,1:8], conf.level = .90)
+corrplot(cor(Weekly[,1:8]), method = 'color', 
+         order = 'hclust', addrect = 3,
+         p.mat = cor_test$p, sig.level = 0.1, tl.col = 'black')
+```
+
+
+```{r}
+Weekly %>%
+    select(-Volume, -Year) %>%
+    ggpairs(aes(col = Direction, fill = Direction),
+            lower = list(continuous = wrap('smooth_loess', alpha = 0.5),
+                         combo = wrap('facetdensity', alpha = 0.5)),
+            diag = list(continuous = wrap('densityDiag',  alpha = 0.5)),
+            upper = list(combo = wrap('dot', alpha = 0.5)))
+```
+```{r}
+Weekly %>%
+    gather(value_type, value, starts_with('Lag')) %>%
+    ggplot(aes(value_type, value, fill = Direction)) +
+    geom_boxplot(notch = TRUE) + 
+    labs(x = '', y = '') +
+    ylim(c(-6, 6)) + 
+    geom_hline(yintercept = 0, linetype = 2)
+```
+```{r}
+t.test(Lag1 ~ Direction, data = Weekly)
+
+```
+```{r}
+t.test(Lag2 ~ Direction, data = Weekly)
+
+```
+## PART B
+
+```{r}
+logreg_full <- glm(Direction ~ . - Year - Today, data = Weekly, family = 'binomial')
+kable(tidy(logreg_full) %>%
+          select(term, estimate, p.value),
+      digits = 3)
+```
+
+## PART C 
+```{r}
+pred <- predict(logreg_full, type = 'response')
+pred_values <- ifelse(pred >= 0.5, 'Up', 'Down')
+
+acc <- paste('Accuracy:', mean(pred_values == Weekly$Direction))
+kable(table(pred_values, Weekly$Direction), 
+      format = 'html') %>%
+    kable_styling() %>%
+    add_header_above(c('Predicted' = 1, 'Observed' = 2)) %>%
+    column_spec(1, bold = T) %>%
+    add_footnote(label = acc)
+```
+
+## PART D
+```{r}
+train <- Weekly[Weekly$Year <= 2008,]
+test <- Weekly[Weekly$Year > 2008,]
+
+lag2_logreg <- glm(Direction ~ Lag2, data = train, family = 'binomial')
+pred <- predict(lag2_logreg, newdata = test, type = 'response')
+pred_values <- ifelse(pred >= 0.5, 'Up', 'Down')
+
+acc <- paste('Accuracy:', mean(pred_values == test$Direction))
+
+kable(table(pred_values, test$Direction), 
+      format = 'html') %>%
+    kable_styling() %>%
+    add_header_above(c('Predicted' = 1, 'Observed' = 2)) %>%
+    column_spec(1, bold = T) %>%
+    add_footnote(label = acc)
+```
+## PART J
+
+```{r}
+library(class)
+acc <- list('1' = 0.5)
+for (i in 1:20) {
+    knn_pred <- knn(train = data.frame(train$Lag2), test = data.frame(test$Lag2), cl = train$Direction, k = i)
+    acc[as.character(i)] = mean(knn_pred == test$Direction)
+}
+
+acc <- unlist(acc)
+data_frame(acc = acc) %>%
+    mutate(k = row_number()) %>%
+    ggplot(aes(k, acc)) +
+    geom_col(aes(fill = k == which.max(acc))) +
+    labs(x = 'K', y = 'Accuracy', title = 'KNN Accuracy for different values of K') +
+    scale_x_continuous(breaks = 1:20) +
+    coord_cartesian(ylim = c(min(acc), max(acc))) +
+    guides(fill = FALSE)
+```
+#QUESTION 14 
+
+## PART A
+```{r}
+library(ISLR);
+library(tidyverse);
+library(ggthemes);
+library(GGally)
+library(knitr);
+library(kableExtra); 
+library(broom)
+
+theme_set(theme_tufte(base_size = 14))
+set.seed(1)
+
+data('Auto')
+Auto <- Auto %>%
+    filter(!cylinders %in% c(3,5)) %>%
+    mutate(mpg01 = factor(ifelse(mpg > median(mpg), 1, 0)),
+           cylinders = factor(cylinders, 
+                              levels = c(4,6,8),
+                              ordered = TRUE),
+           origin = factor(origin,
+                           levels = c(1,2,3),
+                           labels = c('American', 'European', 'Asian')))
+median(Auto$mpg)
+
+```
+
+```{r}
+Auto %>%
+    dplyr::select(mpg, mpg01) %>%
+    sample_n(5)
+```
+
+
+## PART B
+
+```{r}
+Auto %>%
+    dplyr::select(-name, -mpg) %>%
+ggpairs(aes(col = mpg01, fill = mpg01, alpha = 0.6),
+        upper = list(combo = 'box'),
+        diag = list(discrete = wrap('barDiag', position = 'fill')),
+        lower = list(combo = 'dot_no_facet')) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+## PART F
+```{r}
+log_reg <- glm(fmla, data = training, family = binomial)
+pred <- predict(log_reg, testing, type = 'response')
+pred_values <- round(pred)
+table(pred_values, testing$mpg01)
+```
+```{r}
+mean(pred_values == testing$mpg01)
+```
+
